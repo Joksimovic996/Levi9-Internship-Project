@@ -57,9 +57,13 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
     }
 
     @Override
-    public TennisPlayerDTO addTennisPlayer(CreateTennisPlayerDTO tennisPlayerDTO) {
+    public TennisPlayerDTO addTennisPlayer(CreateTennisPlayerDTO tennisPlayerDTO, String role) {
         TennisPlayer tennisPlayer = createTennisPlayerMapper.map(tennisPlayerDTO);
-        List<Authority> authorities = authorityService.findByName("ROLE_PLAYER");
+        List<String> emails = tennisPlayerRepository.checkAvailableEmail(tennisPlayer.getEmail());
+        if (emails.contains(tennisPlayer.getEmail())) {
+            throw new TennisException(HttpStatus.BAD_REQUEST, "Try with another email address!");
+        }
+        List<Authority> authorities = authorityService.findByName(role);
         tennisPlayer.setAuthorities(authorities);
         tennisPlayer.setPassword(passwordEncoder.encode(tennisPlayerDTO.getPassword()));
         tennisPlayer.setDeleted(false);
@@ -93,4 +97,17 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
             throw new TennisException(HttpStatus.NOT_FOUND, "Tennis Player with that email does not exist!");
         return tennisPlayerMapper.map(tennisPlayer);
     }
+
+    @Override
+    public TennisPlayerDTO giveMeBackMyAccount(String email) {
+        TennisPlayer tennisPlayer = tennisPlayerRepository.giveMeBackMyAccount(email);
+        if (tennisPlayer != null) {
+            tennisPlayer.setDeleted(false);
+            tennisPlayerRepository.save(tennisPlayer);
+            return tennisPlayerMapper.map(tennisPlayer);
+        }else
+            throw new TennisException(HttpStatus.BAD_REQUEST, "Incorrect email or your account is active!");
+    }
+
+
 }

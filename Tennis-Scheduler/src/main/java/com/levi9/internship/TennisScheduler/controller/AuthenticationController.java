@@ -10,10 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,7 +45,22 @@ public class AuthenticationController {
     )
     public ResponseEntity<TennisPlayerDTO> addTennisPlayer(
             @RequestBody CreateTennisPlayerDTO tennisPlayerDTO) {
-        return ResponseEntity.ok(tennisPlayerService.addTennisPlayer(tennisPlayerDTO));
+        return ResponseEntity.ok(tennisPlayerService.addTennisPlayer(tennisPlayerDTO, "ROLE_PLAYER"));
     }
 
+    @PostMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation(
+            value = "Sign up a New Admin",
+            notes = "Requires an instance of CreateTennisPlayerDTO"
+    )
+    public ResponseEntity<TennisPlayerDTO> addAdmin(@RequestBody CreateTennisPlayerDTO adminDTO) {
+        return ResponseEntity.ok(tennisPlayerService.addTennisPlayer(adminDTO, "ROLE_ADMIN"));
+
+    }
+
+    @PostMapping("/giveMeAccountBack")
+    public ResponseEntity<TennisPlayerDTO> giveMeBackMyAccount(@RequestParam String email) {
+        return ResponseEntity.ok(tennisPlayerService.giveMeBackMyAccount(email));
+    }
 }

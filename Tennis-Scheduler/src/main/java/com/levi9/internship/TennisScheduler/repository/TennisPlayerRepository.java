@@ -11,8 +11,15 @@ import java.util.List;
 @Repository
 public interface TennisPlayerRepository extends JpaRepository<TennisPlayer,Long> {
 
-    @Query("select tp from TennisPlayer tp where (lower(tp.email)  = lower(:email) and tp.deleted = false)")
+    @Query("select tp from TennisPlayer tp where (tp.email  = :email and tp.deleted = false)")
     TennisPlayer getTennisPlayerByEmail(@Param("email") String email);
+
+    @Query("select tp.email from TennisPlayer tp where (tp.email = :email)")
+    List<String> checkAvailableEmail(@Param("email") String email);
+
+    @Query("select tp from TennisPlayer tp where (tp.email  = :email and tp.deleted = true)")
+    TennisPlayer giveMeBackMyAccount(@Param("email")String email);
+
 
     @Query("select tp from TennisPlayer tp where (tp.username = :username and tp.deleted = false)")
     TennisPlayer findByUsername(String username);

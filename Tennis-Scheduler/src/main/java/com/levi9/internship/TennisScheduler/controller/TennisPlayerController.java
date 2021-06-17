@@ -57,6 +57,7 @@ public class TennisPlayerController {
             value = "Updates The Existing Tennis Player",
             notes = "Requires an instance of CreateTennisPlayerDTO and ID of the tennis player"
     )
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PLAYER')")
     public ResponseEntity<HttpStatus> updateTennisPlayer(@RequestBody CreateTennisPlayerDTO tennisPlayerDTO, @PathVariable Long id) {
         playerService.updateTennisPlayer(tennisPlayerDTO, id);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -67,7 +68,7 @@ public class TennisPlayerController {
             value = "Deletes The Existing Tennis Player",
             notes = "Requires an ID of the tennis player"
     )
-    @PreAuthorize("hasRole('ADMIN') or hasRole('PLAYER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteTennisPlayer(
             @ApiParam(
                     value = "ID of the Tennis Player",
@@ -83,6 +84,7 @@ public class TennisPlayerController {
             notes = "Provide player's email address to look up specific tennis player",
             response = TennisPlayerDTO.class
     )
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PLAYER')")
     public ResponseEntity<TennisPlayerDTO> getTennisPlayerByEmail(
             @ApiParam(
                     value = "Email value from the player you need to retrieve",
