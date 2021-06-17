@@ -1,9 +1,6 @@
 package com.levi9.internship.TennisScheduler.modelDTO.tennisCourt;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +8,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreateTennisCourtDTO {
     @NotNull(message = "Tennis court name cannot be null!")
     private String name;

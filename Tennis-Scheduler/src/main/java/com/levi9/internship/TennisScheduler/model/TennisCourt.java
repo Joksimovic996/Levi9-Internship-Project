@@ -37,4 +37,10 @@ public class TennisCourt {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    public TennisCourt(String name, TennisCourtType courtType, Double pricePerMinute, Boolean deleted) {
+        this.name = name;
+        this.courtType = courtType;
+        this.pricePerMinute = pricePerMinute;
+        this.deleted = deleted;
+    }
 }
