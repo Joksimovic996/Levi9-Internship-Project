@@ -2,6 +2,7 @@ package com.levi9.internship.TennisScheduler.controller;
 
 import com.levi9.internship.TennisScheduler.modelDTO.tennisPlayer.CreateTennisPlayerDTO;
 import com.levi9.internship.TennisScheduler.modelDTO.tennisPlayer.TennisPlayerDTO;
+import com.levi9.internship.TennisScheduler.modelDTO.tennisPlayer.UpdateTennisPlayerDTO;
 import com.levi9.internship.TennisScheduler.service.TennisPlayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -58,7 +60,7 @@ public class TennisPlayerController {
             notes = "Requires an instance of CreateTennisPlayerDTO and ID of the tennis player"
     )
     @PreAuthorize("hasRole('ADMIN') or hasRole('PLAYER')")
-    public ResponseEntity<HttpStatus> updateTennisPlayer(@RequestBody CreateTennisPlayerDTO tennisPlayerDTO, @PathVariable Long id) {
+    public ResponseEntity<HttpStatus> updateTennisPlayer(@Valid @RequestBody UpdateTennisPlayerDTO tennisPlayerDTO, @PathVariable Long id) {
         playerService.updateTennisPlayer(tennisPlayerDTO, id);
         return ResponseEntity.ok(HttpStatus.OK);
     }

@@ -8,6 +8,7 @@ import com.levi9.internship.TennisScheduler.model.Authority;
 import com.levi9.internship.TennisScheduler.model.TennisPlayer;
 import com.levi9.internship.TennisScheduler.modelDTO.tennisPlayer.CreateTennisPlayerDTO;
 import com.levi9.internship.TennisScheduler.modelDTO.tennisPlayer.TennisPlayerDTO;
+import com.levi9.internship.TennisScheduler.modelDTO.tennisPlayer.UpdateTennisPlayerDTO;
 import com.levi9.internship.TennisScheduler.repository.TennisPlayerRepository;
 import com.levi9.internship.TennisScheduler.service.AuthorityService;
 import com.levi9.internship.TennisScheduler.service.TennisPlayerService;
@@ -36,12 +37,17 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
         this.createTennisPlayerMapper = createTennisPlayerMapper;
         this.authorityService = authorityService;
         this.passwordEncoder = passwordEncoder;
+
     }
 
 
     @Override
     public TennisPlayerDTO getTennisPlayer(Long id) {
-        return tennisPlayerMapper.map(tennisPlayerRepository.getTennisPlayerById(id));
+        TennisPlayer tennisPlayer = tennisPlayerRepository.getTennisPlayerById(id);
+        if (tennisPlayer != null) {
+            return tennisPlayerMapper.map(tennisPlayer);
+        }else
+            throw new TennisException(HttpStatus.NOT_FOUND, "Tennis player does not exist!");
     }
 
     @Override
@@ -72,13 +78,18 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
     }
 
     @Override
-    public void updateTennisPlayer(CreateTennisPlayerDTO tennisPlayerDTO, Long id) {
-        TennisPlayer tennisPlayer = tennisPlayerRepository.getTennisPlayerByEmail(tennisPlayerDTO.getEmail());
-        if(tennisPlayer != null) {
+    public void updateTennisPlayer(UpdateTennisPlayerDTO updateTennisPlayerDTO, Long id) {
+        TennisPlayer updatedTennisPlayer=tennisPlayerRepository.getTennisPlayerById(id);
+        if(updatedTennisPlayer==null)
+            throw new TennisException(HttpStatus.NOT_FOUND,"Tennis player does not exist");
+        TennisPlayer tennisPlayer = tennisPlayerRepository.getTennisPlayerByEmail(updateTennisPlayerDTO.getEmail());
+        if(tennisPlayer != null && tennisPlayer.getId()!=id ) {
             throw new TennisException(HttpStatus.BAD_REQUEST,"Tennis Player with that email already exist!");
         }
-        TennisPlayer updatedTennisPlayer = createTennisPlayerMapper.map(tennisPlayerDTO);
-        updatedTennisPlayer.setId(id);
+        updatedTennisPlayer.setName(updateTennisPlayerDTO.getName());
+        updatedTennisPlayer.setLastName(updateTennisPlayerDTO.getLastName());
+        updatedTennisPlayer.setDateOfBirth(updateTennisPlayerDTO.getDateOfBirth());
+        updatedTennisPlayer.setEmail(updateTennisPlayerDTO.getEmail());
         tennisPlayerRepository.save(updatedTennisPlayer);
     }
 
@@ -96,6 +107,7 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
         if (tennisPlayer == null)
             throw new TennisException(HttpStatus.NOT_FOUND, "Tennis Player with that email does not exist!");
         return tennisPlayerMapper.map(tennisPlayer);
+
     }
 
     @Override

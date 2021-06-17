@@ -4,6 +4,7 @@ import com.levi9.internship.TennisScheduler.enumerations.PaymentType;
 import com.levi9.internship.TennisScheduler.exceptions.TennisException;
 import com.levi9.internship.TennisScheduler.mapper.timeSlot.TimeSlotMapper;
 import com.levi9.internship.TennisScheduler.model.Reservation;
+import com.levi9.internship.TennisScheduler.model.TennisPlayer;
 import com.levi9.internship.TennisScheduler.model.TimeSlot;
 import com.levi9.internship.TennisScheduler.modelDTO.timeSlot.TimeSlotDTO;
 import com.levi9.internship.TennisScheduler.repository.ReservationRepository;
@@ -34,22 +35,25 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
     @Override
     public TimeSlotDTO getTimeSlot(Long id) {
-        return timeSlotMapper.map(timeSlotRepository.getById(id));
+        TimeSlot timeSlot = timeSlotRepository.getTimeSlotById(id);
+        if (timeSlot != null) {
+            return timeSlotMapper.map(timeSlot);
+        }else
+            throw new TennisException(HttpStatus.NOT_FOUND, "Time slot does not exist!");
     }
 
     @Override
     public List<TimeSlotDTO> getAllTimeSlots() {
         List<TimeSlotDTO> timeSlots = new ArrayList<>();
-        timeSlotRepository.findAll().forEach(timeSlot -> timeSlots.add(timeSlotMapper.map(timeSlot)));
+        timeSlotRepository.getAllSlots().forEach(timeSlot -> timeSlots.add(timeSlotMapper.map(timeSlot)));
         return timeSlots;
 
     }
 
     @Override
     public void deleteTimeSlot(Long id) {
-        TimeSlot newTimeSlot = timeSlotRepository.getById(id);
-        System.out.println(newTimeSlot.getReservation().getId());
-        Reservation reservation = reservationRepository.getById(newTimeSlot.getReservation().getId());
+        TimeSlot newTimeSlot = timeSlotRepository.getTimeSlotById(id);
+        Reservation reservation = reservationRepository.getReservationById(newTimeSlot.getReservation().getId());
         List<TimeSlot> timeSlots = timeSlotRepository.getTimeSlotsOfReservation(newTimeSlot.getReservation().getId());
 
         if(reservation.getPaymentType().equals(PaymentType.PAY_WITH_CREDIT_CARD)){
@@ -57,14 +61,14 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         }
 
         if(timeSlots.size() == 1){
-            reservationRepository.deleteById(reservation.getId());
-            return;
-        } else if(timeSlots.size() == 6){
-            reservation.setPrice(reservation.getPrice() - 10);
+           reservation.setDeleted(true);
+           reservationRepository.save(reservation);
+        } else {
+            reservation.setPrice(reservation.getPrice() - reservationService.getPriceOfTimeSlot(newTimeSlot));
+            reservationRepository.save(reservation);
+            if(timeSlots.size() == 6)
+                reservation.setPrice(reservation.getPrice() - 10);
         }
-
-        reservation.setPrice(reservation.getPrice() - reservationService.getPriceOfTimeSlot(newTimeSlot));
-        reservationRepository.save(reservation);
 
 
         newTimeSlot.setDeleted(true);
