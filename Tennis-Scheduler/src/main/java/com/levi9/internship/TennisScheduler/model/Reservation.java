@@ -42,7 +42,8 @@ public class Reservation {
     @Column(name = "paid")
     private Boolean paid;
 
-
+    @Column(name = "deleted")
+    private Boolean deleted;
 
 
 }

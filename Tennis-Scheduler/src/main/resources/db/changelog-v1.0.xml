@@ -16,11 +16,6 @@
                  relativeToChangelogFile="true" />
     </changeSet>
 
-    <changeSet id="init data" author="Dunja">
-        <sqlFile path="scripts/initData.sql"
-                 relativeToChangelogFile="true" />
-    </changeSet>
-
     <changeSet id="Change data type" author="Dunja">
         <sqlFile path="scripts/typeChanges.sql"
                  relativeToChangelogFile="true" />
@@ -55,5 +50,8 @@
              relativeToChangelogFile="true" />
     </changeSet>
 
-
+    <changeSet id="init data" author="Dunja">
+        <sqlFile path="scripts/initData.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
 </databaseChangeLog>

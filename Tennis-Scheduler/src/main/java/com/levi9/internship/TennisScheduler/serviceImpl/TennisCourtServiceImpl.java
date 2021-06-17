@@ -1,5 +1,6 @@
 package com.levi9.internship.TennisScheduler.serviceImpl;
 
+import com.levi9.internship.TennisScheduler.enumerations.TennisCourtType;
 import com.levi9.internship.TennisScheduler.exceptions.TennisException;
 import com.levi9.internship.TennisScheduler.mapper.tennisCourt.CreateTennisCourtMapper;
 import com.levi9.internship.TennisScheduler.mapper.tennisCourt.TennisCourtMapper;
@@ -46,7 +47,11 @@ public class TennisCourtServiceImpl implements TennisCourtService {
 
     @Override
     public TennisCourtDTO getTennisCourtById(Long id) {
-        return tennisCourtMapper.map(courtRepository.getTennisCourtById(id));
+        TennisCourt tennisCourt = courtRepository.getTennisCourtById(id);
+        if (tennisCourt != null) {
+            return tennisCourtMapper.map(tennisCourt);
+        }else
+            throw new TennisException(HttpStatus.NOT_FOUND, "Tennis court does not exist!");
     }
 
     @Override
@@ -67,11 +72,9 @@ public class TennisCourtServiceImpl implements TennisCourtService {
     @Override
     public void updateTennisCourt(UpdateTennisCourtDTO tennisCourtDTO, Long id) {
         TennisCourt temp = courtRepository.getTennisCourtById(id);
-        TennisCourt updated = updateTennisCourtMapper.map(tennisCourtDTO);
-        updated.setId(temp.getId());
-        updated.setName(temp.getName());
-        courtRepository.save(updated);
-
+        temp.setPricePerMinute(tennisCourtDTO.getPricePerMinute());
+        temp.setCourtType(TennisCourtType.valueOf(tennisCourtDTO.getCourtType()));
+        courtRepository.save(temp);
     }
 
     @Override
@@ -83,6 +86,11 @@ public class TennisCourtServiceImpl implements TennisCourtService {
 
     @Override
     public List<TimeSlotDTO> getTimeSlotsByTennisCourt(Long id) {
+        TennisCourt tennisCourt=courtRepository.getTennisCourtById(id);
+        if(tennisCourt==null)
+        {
+            throw new TennisException(HttpStatus.NOT_FOUND,"Tennis court with that id does not exist!");
+        }
         List<TimeSlotDTO> timeSlots = new ArrayList<>();
         courtRepository.getTimeSlotsOfTennisCourt(id).forEach(timeSlot -> timeSlots.add(timeSlotMapper.map(timeSlot)));
         return timeSlots;

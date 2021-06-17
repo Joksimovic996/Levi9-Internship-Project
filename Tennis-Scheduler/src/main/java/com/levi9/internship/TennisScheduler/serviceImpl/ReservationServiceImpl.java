@@ -7,6 +7,7 @@ import com.levi9.internship.TennisScheduler.mapper.reservation.ReservationMapper
 import com.levi9.internship.TennisScheduler.mapper.timeSlot.CreateTimeSlotMapper;
 import com.levi9.internship.TennisScheduler.model.Reservation;
 import com.levi9.internship.TennisScheduler.model.TennisCourt;
+import com.levi9.internship.TennisScheduler.model.TennisPlayer;
 import com.levi9.internship.TennisScheduler.model.TimeSlot;
 import com.levi9.internship.TennisScheduler.modelDTO.creditcard.CreditCardDTO;
 import com.levi9.internship.TennisScheduler.modelDTO.reservation.CreateReservationDTO;
@@ -48,12 +49,18 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationDTO getReservation(Long id) {
-        return reservationMapper.map(reservationRepository.getById(id));
+        Reservation reservation=reservationRepository.getReservationById(id);
+        if(reservation!=null) {
+            return reservationMapper.map(reservation);
+        }else
+        {
+            throw new TennisException(HttpStatus.NOT_FOUND, "Reservation does not exist!");
+        }
     }
 
     @Override
     public List<ReservationDTO> getAllReservations() {
-        List<Reservation> tempReservations = reservationRepository.findAll();
+        List<Reservation> tempReservations = reservationRepository.getAllReservations();
         List<ReservationDTO> reservations = new ArrayList<>();
         for (Reservation temp : tempReservations) {
             reservations.add(reservationMapper.map(temp));
@@ -77,7 +84,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<TimeSlot> slotsToBeSaved = new ArrayList<>();
         List<TimeSlot> slotsInBase;
         var price = 0.0;
-        var tennisPlayer = tennisPlayerRepository.getById(tennisPlayerId);
+        TennisPlayer tennisPlayer = tennisPlayerRepository.getById(tennisPlayerId);
 
         List<TimeSlot> alreadyHasTimeSlotsOnThatDay;
 
@@ -94,8 +101,8 @@ public class ReservationServiceImpl implements ReservationService {
 
             slotsInBase = timeSlotRepository.getTimeSlotOfSameDateAndCourt(timeSlotDTO.getStartDateAndTime(), timeSlotDTO.getEndDateAndTime(), timeSlotDTO.getTennisCourt());
             if (slotsInBase.isEmpty()){
-                var tennisCourt = tennisCourtRepository.getById(timeSlotDTO.getTennisCourt());
-                var timeSlot = setCurrentTimeSlot(timeSlotDTO, newReservation, tennisCourt);
+                TennisCourt tennisCourt = tennisCourtRepository.getTennisCourtById(timeSlotDTO.getTennisCourt());
+                TimeSlot timeSlot = setCurrentTimeSlot(timeSlotDTO, newReservation, tennisCourt);
                 slotsToBeSaved.add(timeSlot);
                 price += getPriceOfTimeSlot(timeSlot);
             } else {
@@ -109,6 +116,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         newReservation.setReservationDate(LocalDateTime.now());
         newReservation.setPrice(price);
+        newReservation.setDeleted(false);
         newReservation.setTennisPlayer(tennisPlayer);
         if (newReservation.getPaymentType().equals(PaymentType.PAY_WITH_CASH)) {
             newReservation.setPaid(false);
@@ -123,7 +131,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void updateReservation(Boolean paid, Long id) {
-        var reservation = reservationRepository.getById(id);
+        Reservation reservation = reservationRepository.getReservationById(id);
         if (reservation.getPaymentType().equals(PaymentType.PAY_WITH_CASH)) {
             reservation.setPaid(paid);
             reservationRepository.save(reservation);
@@ -134,7 +142,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void deleteReservationById(Long id) {
-        reservationRepository.deleteById(id);
+
+        Reservation reservation = reservationRepository.getReservationById(id);
+        reservation.setDeleted(true);
+        List<TimeSlot> timeSlots=timeSlotRepository.getTimeSlotsOfReservation(id);
+        for (TimeSlot timeSlot: timeSlots) {
+            timeSlot.setDeleted(true);
+            timeSlotRepository.save(timeSlot);
+        }
+        reservationRepository.save(reservation);
     }
 
     protected Double getPriceOfTimeSlot(TimeSlot timeSlot) {
@@ -144,7 +160,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private TimeSlot setCurrentTimeSlot(CreateTimeSlotDTO createTimeSlotDTO, Reservation newReservation, TennisCourt tennisCourt) {
-        var timeSlot = timeSlotMapper.map(createTimeSlotDTO);
+        TimeSlot timeSlot = timeSlotMapper.map(createTimeSlotDTO);
         timeSlot.setReservation(newReservation);
         timeSlot.setTennisCourt(tennisCourt);
         timeSlot.setDeleted(false);

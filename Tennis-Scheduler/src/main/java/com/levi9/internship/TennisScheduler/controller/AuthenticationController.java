@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @Api(value = "Authentication Endpoints")
@@ -44,7 +45,7 @@ public class AuthenticationController {
             notes = "Requires an instance of CreateTennisPlayerDTO"
     )
     public ResponseEntity<TennisPlayerDTO> addTennisPlayer(
-            @RequestBody CreateTennisPlayerDTO tennisPlayerDTO) {
+            @Valid @RequestBody CreateTennisPlayerDTO tennisPlayerDTO) {
         return ResponseEntity.ok(tennisPlayerService.addTennisPlayer(tennisPlayerDTO, "ROLE_PLAYER"));
     }
 
@@ -54,7 +55,7 @@ public class AuthenticationController {
             value = "Sign up a New Admin",
             notes = "Requires an instance of CreateTennisPlayerDTO"
     )
-    public ResponseEntity<TennisPlayerDTO> addAdmin(@RequestBody CreateTennisPlayerDTO adminDTO) {
+    public ResponseEntity<TennisPlayerDTO> addAdmin(@Valid @RequestBody CreateTennisPlayerDTO adminDTO) {
         return ResponseEntity.ok(tennisPlayerService.addTennisPlayer(adminDTO, "ROLE_ADMIN"));
 
     }

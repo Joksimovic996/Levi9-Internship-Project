@@ -65,4 +65,9 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleException(UsernameNotFoundException usernameNotFoundException) {
         return new ResponseEntity<>(usernameNotFoundException.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleException(NullPointerException nullPointerException) {
+        return new ResponseEntity<>(nullPointerException.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }
