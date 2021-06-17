@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- UBACUJEMO CHANGE SET-ove
+    <changeSet id="init" author="">
+        <sqlFile path="scripts/init.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+    -->
+    <changeSet id="init" author="Dunja">
+        <sqlFile path="scripts/init.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="init data" author="Dunja">
+        <sqlFile path="scripts/initData.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="Change data type" author="Dunja">
+        <sqlFile path="scripts/typeChanges.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="Add paid column in reservation" author="Dunja">
+        <sqlFile path="scripts/paidReservation.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="Add paid authority table" author="Dunja">
+        <sqlFile path="scripts/authorityTable.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="Add new columns in tennis player" author="Dunja">
+        <sqlFile path="scripts/newColumnsTennisPlayer.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="Add new values in authority table" author="Dunja">
+        <sqlFile path="scripts/insertAuthority.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+    <changeSet id="Add new player_authority table" author="Dunja">
+        <sqlFile path="scripts/createPlayerAuthorityTable.sql"
+                 relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="Add logical delete" author="Dunja">
+    <sqlFile path="scripts/logicalDelete.sql"
+             relativeToChangelogFile="true" />
+    </changeSet>
+
+
+</databaseChangeLog>

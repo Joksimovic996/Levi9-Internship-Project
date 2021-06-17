@@ -1,0 +1,43 @@
+{
+  "properties": [
+    {
+      "name": "tennis-scheduler.name",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.name."
+    },
+    {
+      "name": "tennis-scheduler.api.title",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.title."
+    },
+    {
+      "name": "tennis-scheduler.api.version",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.version."
+    },
+    {
+      "name": "tennis-scheduler.api.description",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.description."
+    },
+    {
+      "name": "tennis-scheduler.api.base-package",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.base-package."
+    },
+    {
+      "name": "tennis-scheduler.api.contact-name",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.contact-name."
+    },
+    {
+      "name": "tennis-scheduler.api.contact-email",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.contact-email."
+    },
+    {
+      "name": "tennis-scheduler.api.swagger.enable",
+      "type": "java.lang.String",
+      "description": "Description for tennis-scheduler.api.swagger.enable."
+    }
+  ] }
