@@ -8,5 +8,6 @@ public interface TimeSlotService {
 
     TimeSlotDTO getTimeSlot(Long id);
     List<TimeSlotDTO> getAllTimeSlots();
-
+    void deleteTimeSlot(Long id);
+    List<TimeSlotDTO> getTimeSlotsOfReservation(Long id);
 }

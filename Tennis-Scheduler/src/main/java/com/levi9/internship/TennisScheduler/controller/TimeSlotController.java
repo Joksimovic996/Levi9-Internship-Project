@@ -6,11 +6,10 @@ import com.levi9.internship.TennisScheduler.serviceImpl.TimeSlotServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +45,26 @@ public class TimeSlotController {
     )
     public ResponseEntity<List<TimeSlotDTO>> getTimeSlots(){
         return ResponseEntity.ok(timeSlotService.getAllTimeSlots());
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(
+            value = "Logical delete of time slot",
+            notes = "Requires an ID of Time Slot"
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> deleteTimeSlot(@PathVariable Long id){
+        timeSlotService.deleteTimeSlot(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/time-slots")
+    @ApiOperation(
+            value = "Returns all time slots of selected reservation",
+            notes = "Requires an ID of Reservation"
+    )
+    public ResponseEntity<List<TimeSlotDTO>> getTimeSlotsOfReservation(Long id){
+        return ResponseEntity.ok(timeSlotService.getTimeSlotsOfReservation(id));
     }
 
 }

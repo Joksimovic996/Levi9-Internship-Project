@@ -110,7 +110,11 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setReservationDate(LocalDateTime.now());
         newReservation.setPrice(price);
         newReservation.setTennisPlayer(tennisPlayer);
-
+        if (newReservation.getPaymentType().equals(PaymentType.PAY_WITH_CASH)) {
+            newReservation.setPaid(false);
+        } else {
+            newReservation.setPaid(true);
+        }
         reservationRepository.save(newReservation);
         for(TimeSlot temp : slotsToBeSaved) {
             timeSlotRepository.save(temp);
@@ -133,7 +137,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    private Double getPriceOfTimeSlot(TimeSlot timeSlot) {
+    protected Double getPriceOfTimeSlot(TimeSlot timeSlot) {
         return ((timeSlot.getEndDateAndTime().getHour() * 60 + timeSlot.getEndDateAndTime().getMinute())
                 - (timeSlot.getStartDateAndTime().getHour() * 60 + timeSlot.getStartDateAndTime().getMinute())) *
                 timeSlot.getTennisCourt().getPricePerMinute();
@@ -143,6 +147,7 @@ public class ReservationServiceImpl implements ReservationService {
         var timeSlot = timeSlotMapper.map(createTimeSlotDTO);
         timeSlot.setReservation(newReservation);
         timeSlot.setTennisCourt(tennisCourt);
+        timeSlot.setDeleted(false);
         return timeSlot;
     }
 }

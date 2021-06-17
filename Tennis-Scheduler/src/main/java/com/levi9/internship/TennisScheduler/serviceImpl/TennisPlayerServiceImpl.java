@@ -62,6 +62,7 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
         List<Authority> authorities = authorityService.findByName("ROLE_PLAYER");
         tennisPlayer.setAuthorities(authorities);
         tennisPlayer.setPassword(passwordEncoder.encode(tennisPlayerDTO.getPassword()));
+        tennisPlayer.setDeleted(false);
         tennisPlayer = tennisPlayerRepository.save(tennisPlayer);
         return tennisPlayerMapper.map(tennisPlayer);
     }

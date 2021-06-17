@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -54,6 +55,7 @@ public class ReservationController {
             value = "Adds a new Reservation",
             notes = "Requires an instance of ReservationDTO and an ID of Tennis player who reserved it"
     )
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PLAYER')")
     public ResponseEntity<HttpStatus> addReservation(
             @ApiParam(
                     value = "ID value for the the tennis player who reserved it",

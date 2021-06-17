@@ -40,6 +40,7 @@ public class TennisCourtServiceImpl implements TennisCourtService {
     @Override
     public void addTennisCourt(CreateTennisCourtDTO tennisCourtDTO) {
         TennisCourt newCourt = createTennisCourtMapper.map(tennisCourtDTO);
+        newCourt.setDeleted(false);
         courtRepository.save(newCourt);
     }
 
