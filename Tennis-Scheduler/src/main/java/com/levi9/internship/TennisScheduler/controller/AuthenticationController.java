@@ -74,12 +74,12 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/giveMeAccountBack")
+    @PostMapping("/restoreAccount")
     @ApiOperation(
             value = "Activate account of tennis player",
             notes = "Requires an email of player you want to activate back"
     )
-    public ResponseEntity<TennisPlayerDTO> giveMeBackMyAccount(@RequestParam String email) {
-        return ResponseEntity.ok(tennisPlayerService.giveMeBackMyAccount(email));
+    public ResponseEntity<TennisPlayerDTO> restoreAccount(@RequestParam String email) {
+        return ResponseEntity.ok(tennisPlayerService.restoreAccount(email));
     }
 }
