@@ -8,6 +8,5 @@ import javax.servlet.http.HttpServletRequest;
 public interface AuthenticationService {
 
     TokenStateDTO createAuthenticationToken(AuthenticationRequestDTO requestDTO);
-    TokenStateDTO refreshAuthenticationToken(HttpServletRequest request);
 
 }
