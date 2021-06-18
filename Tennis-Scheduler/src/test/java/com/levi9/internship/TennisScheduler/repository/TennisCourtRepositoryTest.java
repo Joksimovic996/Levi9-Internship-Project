@@ -1,17 +1,16 @@
 package com.levi9.internship.TennisScheduler.repository;
 
-import com.levi9.internship.TennisScheduler.enumerations.TennisCourtType;
 import com.levi9.internship.TennisScheduler.mapper.tennisCourt.CreateTennisCourtMapper;
 import com.levi9.internship.TennisScheduler.model.TennisCourt;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class TennisCourtRepositoryTest {
@@ -26,49 +25,49 @@ class TennisCourtRepositoryTest {
     @Test
     void checkGetTennisCourtByName() {
 
-        String name = "ATP ROME";
-        // given
-//        TennisCourt t = new TennisCourt(
-//                name,
-//                TennisCourtType.CARPET_WITH_ROOF,
-//                0.8,
-//                false);
-        //underTest.save(t);
-        // when
+        String name = "Rod Laver Arena";
         TennisCourt expected = underTest.getTennisCourtByName(name);
-        // then
-        assertThat(expected);
+        System.out.println(expected.getName());
+        assertThat(expected).isNotNull();
+        //assertEquals(expected, underTest.getTennisCourtByName(name));
     }
 
     @Test
     void badNameForGetTennisCourtByName() throws Exception{
         String name = "Asdf22#$";
-        //TennisCourt expected = underTest.getTennisCourtByName(name);
-        assertThatThrownBy(() -> underTest.getTennisCourtByName(name))
-        .isInstanceOf(Exception.class)
-        .hasMessage("Name "+ underTest.getTennisCourtByName(name)+" does not exist");
+        //String value = underTest.getTennisCourtByName(name).getName();
+        //assertEquals(name, value);
+        TennisCourt expected = underTest.getTennisCourtByName(name);
+        assertThat(expected).isNull();
     }
 
     @Test
+    @Transactional
     void checkGetTennisCourtById(){
-        Long id = Long.valueOf(5);
+        Long id = Long.valueOf(2);
 
-        TennisCourt expected = underTest.getById(id);
-
+        //Long value = underTest.getById(id).getId();
+        //assertEquals(2, value);
+        TennisCourt expected = underTest.getTennisCourtById(id);
+        System.out.println(underTest.getTennisCourtById(id).getName());
         assertThat(expected).isNotNull();
     }
 
     @Test
+    @Transactional
     void badIdForGetTennisCourtById(){
         Long id = Long.valueOf(999);
-        TennisCourt expected = underTest.getById(id);
-        assertThat(expected).isNull();
+        //Long expected = underTest.getById(id).getId();
+        assertEquals(999, underTest.getTennisCourtById(id).getId());
     }
 
     @Test
     void checkGetAllTennisCourts(){
         List<TennisCourt> courts = underTest.getAllCourts();
 
+        for(TennisCourt court : courts){
+            System.out.println(court.getName());
+        }
         assertThat(courts).isNotNull();
     }
 }
