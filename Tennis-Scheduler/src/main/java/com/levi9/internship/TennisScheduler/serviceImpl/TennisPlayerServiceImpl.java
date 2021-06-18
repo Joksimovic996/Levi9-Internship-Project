@@ -111,8 +111,8 @@ public class TennisPlayerServiceImpl implements TennisPlayerService {
     }
 
     @Override
-    public TennisPlayerDTO giveMeBackMyAccount(String email) {
-        TennisPlayer tennisPlayer = tennisPlayerRepository.giveMeBackMyAccount(email);
+    public TennisPlayerDTO restoreAccount(String email) {
+        TennisPlayer tennisPlayer = tennisPlayerRepository.restoreAccount(email);
         if (tennisPlayer != null) {
             tennisPlayer.setDeleted(false);
             tennisPlayerRepository.save(tennisPlayer);

@@ -22,5 +22,5 @@ public interface TennisPlayerService {
 
     TennisPlayerDTO getTennisPlayerByEmail(String email);
 
-    TennisPlayerDTO giveMeBackMyAccount(String email);
+    TennisPlayerDTO restoreAccount(String email);
 }

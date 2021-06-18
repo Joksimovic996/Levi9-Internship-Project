@@ -18,8 +18,7 @@ public interface TennisPlayerRepository extends JpaRepository<TennisPlayer,Long>
     List<String> checkAvailableEmail(@Param("email") String email);
 
     @Query("select tp from TennisPlayer tp where (tp.email  = :email and tp.deleted = true)")
-    TennisPlayer giveMeBackMyAccount(@Param("email")String email);
-
+    TennisPlayer restoreAccount(@Param("email")String email);
 
     @Query("select tp from TennisPlayer tp where (tp.username = :username and tp.deleted = false)")
     TennisPlayer findByUsername(String username);
